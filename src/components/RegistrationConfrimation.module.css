@@ -1,0 +1,42 @@
+/* src/components/RegistrationConfirmation.module.css */
+/* RegistrationConfirmation name="John Doe" email="john@example.com"
+*/
+
+
+/* Background */
+body {
+  background-color: #1e1e2f; 
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Main container */
+.confirmationContainer {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  color: #1e1e2f;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Heading */
+.heading {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #f5c518;
+  background-color: #1e1e2f;
+  padding: 10px 0;
+  border-radius: 8px;
+}
+
+/* Message text */
+.message {
+  font-size: 1rem;
+  color: #1e1e2f;
+  margin-bottom: 10px;
+}

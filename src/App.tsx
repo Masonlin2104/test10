@@ -12,6 +12,9 @@ import OrderConfirmation from './components/OrderConfrimation';
 import RegistrationForm from './components/RegistrationForm';
 import RegistrationConfirmation from './components/RegistrationConfirmation';
 import TicketSelection from "./components/TicketSelection";
+import {Routes, Route} from "react-router-dom";
+
+
 
 function App() {
   const handleConfirm = (tickets: number) => {
@@ -19,9 +22,10 @@ function App() {
   };
 
   return (
-    <div>
-      <HomePage />
-    </div>
+    <Routes>
+      <Route path="/home" element={<HomePage />} />
+      <Route path="/login" element={<LoginForm/>} />
+    </Routes>
   );
 }
 

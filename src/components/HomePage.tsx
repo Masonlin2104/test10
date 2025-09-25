@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { sampleMovies } from "../data/movies";
 import { Movie } from "../models/Movie";
 import styles from "./HomePage.module.css";
+import {Link} from "react-router-dom"
+
+
 
 const HomePage: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -21,7 +24,10 @@ const HomePage: React.FC = () => {
       {/* Header */}
       <header className={styles.header}>
         <h1 className={styles.title}>Cinema E-Booking System</h1>
-        <button className={styles.loginButton}>Login</button>
+        <Link to="/login">
+          <button className={styles.loginButton}>Login</button>
+        </Link>
+        
       </header>
 
       {/* Search Bar */}

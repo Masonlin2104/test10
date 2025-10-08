@@ -1,27 +1,39 @@
 // src/components/MovieDetails.tsx
-/* movie={sampleMovies[0]} */
-
 import React from "react";
-import { Movie } from "../models/Movie";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./MovieDetails.module.css";
 
-interface MovieDetailsProps {
-  movie: Movie; // single movie prop
+interface Movie {
+  id: number;
+  title: string;
+  posterUrl: string;
+  showTimes: string[];
 }
 
-const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
+const MovieDetails: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const movie = location.state?.movie as Movie | undefined;
+
+  if (!movie) {
+    return <div className={styles.container}><p>Movie not found.</p></div>;
+  }
+  
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>{movie.title}</h2>
-      <img src={movie.posterUrl} alt={movie.title} className={styles.poster} />
-      <iframe
-        src={movie.trailerUrl}
-        title={movie.title}
-        className={styles.trailer}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-      {movie.description && <p className={styles.description}>{movie.description}</p>}
+      <h2>{movie.title}</h2>
+      <img src={movie.posterUrl} alt={`${movie.title} poster`} className={styles.poster} />
+      <h3>Showtimes:</h3>
+      {movie.showTimes && movie.showTimes.length > 0 ? (
+        <ul className={styles.showTimeList}>
+          {movie.showTimes.map((time) => (
+            <li key={time} className={styles.showTimeItem}>{time}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No showtimes available.</p>
+      )}
+      <button onClick={() => navigate(-1)} className={styles.backButton}>Back</button>
     </div>
   );
 };

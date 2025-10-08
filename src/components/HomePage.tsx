@@ -1,23 +1,27 @@
 // src/components/HomePage.tsx
 
 import React, { useState } from "react";
-import { sampleMovies } from "../data/movies";
+import { sampleMovies as movies } from "../data/movies";
 import { Movie } from "../models/Movie";
 import styles from "./HomePage.module.css";
-import {Link} from "react-router-dom"
-
-
+import { Link, useNavigate } from "react-router-dom";
 
 const HomePage: React.FC = () => {
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   // Filter movies based on search
-  const filteredMovies: Movie[] = sampleMovies.filter((movie) =>
+  const filteredMovies: Movie[] = movies.filter((movie) =>
     movie.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const currentlyRunning: Movie[] = filteredMovies.filter((movie) => movie.status === "running");
   const comingSoon: Movie[] = filteredMovies.filter((movie) => movie.status === "comingSoon");
+
+  // Navigate to MovieDetails and pass the selected movie
+  const handleBookMovie = (movie: Movie) => {
+    navigate("/MovieDetails", { state: { movie } });
+  };
 
   return (
     <div className={styles.container}>
@@ -27,7 +31,6 @@ const HomePage: React.FC = () => {
         <Link to="/login">
           <button className={styles.loginButton}>Login</button>
         </Link>
-        
       </header>
 
       {/* Search Bar */}
@@ -57,7 +60,12 @@ const HomePage: React.FC = () => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
-                <button className={styles.bookButton}>Book Movie</button>
+                <button
+                  className={styles.bookButton}
+                  onClick={() => handleBookMovie(movie)}
+                >
+                  Book Movie
+                </button>
               </div>
             </div>
           ))}
@@ -80,7 +88,12 @@ const HomePage: React.FC = () => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
-                <button className={styles.bookButton}>Book Movie</button>
+                <button
+                  className={styles.bookButton}
+                  onClick={() => handleBookMovie(movie)}
+                >
+                  Book Movie
+                </button>
               </div>
             </div>
           ))}

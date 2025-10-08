@@ -1,7 +1,7 @@
 // src/components/RegistrationConfirmation.tsx
 
 import React from "react";
-import styles from "./RegistrationConfirmation.module.css";
+import styles from "./RegistrationConfrimation.module.css";
 
 interface RegistrationConfirmationProps {
   name: string;

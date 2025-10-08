@@ -48,3 +48,38 @@ body {
   font-size: 1.1rem;
   color: #4caf50; 
 }
+
+/* Confirm & Continue Button */
+.confirmButton {
+  background-color: #f5c518;
+  color: #1e1e2f;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.confirmButton:hover {
+  background-color: #ffe066;
+}
+
+/* Ticket Delete Button */
+.deleteButton {
+  background-color: #e53935;
+  color: #ffffff;
+  padding: 6px 16px;   /* smaller padding */
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;  /* slightly smaller text */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.deleteButton:hover {
+  background-color: #ef5350;
+}
+

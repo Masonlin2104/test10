@@ -63,3 +63,51 @@ body {
   margin-top: 10px;
   text-align: center;
 }
+
+/* Showtimes list styling */
+.showTimeList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Individual showtime button */
+.showTimeItem {
+  background-color: #2a2a4a;
+  color: #f5c518;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.showTimeItem:hover {
+  background-color: #f5c518;
+  color: #1e1e2f;
+}
+
+/* Back button styling */
+.backButton {
+  background-color: #2a2a4a;
+  color: #f5c518;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-block;
+  margin: 20px auto 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #f5c518;
+  color: #1e1e2f;
+}

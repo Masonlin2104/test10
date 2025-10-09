@@ -1,85 +1,171 @@
-/* src/components/OrderConfirmation.module.css */
-
 /* Background for page */
 body {
-  background-color: #1e1e2f; 
+  background-color: #1e1e2f;
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1e1e2f;
 }
 
 /* Main container */
 .container {
-  max-width: 600px;
+  max-width: 650px;
   margin: 50px auto;
   padding: 30px;
-  background-color: #ffffff; 
+  background-color: #ffffff;
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  color: #1e1e2f;
-  text-align: center;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
 }
 
 /* Heading */
 .heading {
   font-size: 2rem;
-  color: #f5c518; 
-  margin-bottom: 20px;
+  color: #f5c518;
+  margin-bottom: 25px;
   background-color: #1e1e2f;
-  padding: 10px 0;
-  border-radius: 8px;
-}
-
-/* Details section */
-.details {
-  text-align: left;
-  margin: 20px 0;
-  font-size: 1rem;
-}
-
-.details p {
-  margin-bottom: 10px;
-}
-
-/* Thank you message */
-.thankYou {
-  margin-top: 20px;
+  padding: 12px 0;
+  border-radius: 10px;
   font-weight: bold;
-  font-size: 1.1rem;
-  color: #4caf50; 
+  text-align: center;
 }
 
-/* Confirm & Continue Button */
-.confirmButton {
+/* Order info */
+.container p {
+  font-size: 1rem;
+  margin: 8px 0;
+}
+
+/* Tickets list */
+.ticketList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 20px 0;
+}
+
+/* Individual ticket */
+.ticketItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f4f4f9;
+  border-left: 5px solid #f5c518;
+  border-radius: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ticketItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Ticket info container */
+.ticketInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* Seat badge */
+.seatInfo {
   background-color: #f5c518;
   color: #1e1e2f;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 8px;
+  font-weight: 700;
   font-size: 1rem;
+  padding: 6px 12px;
+  border-radius: 50px; /* pill-shaped */
+  min-width: 80px;
+  text-align: center;
+}
+
+/* Price badge */
+.priceInfo {
+  background-color: #1e1e2f;
+  color: #ffffff;
   font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  border-radius: 50px; /* pill-shaped */
+  min-width: 70px;
+  text-align: center;
 }
 
-.confirmButton:hover {
-  background-color: #ffe066;
+/* Row layout for larger screens */
+@media(min-width: 480px) {
+  .ticketInfo {
+    flex-direction: row;
+    gap: 40px;
+  }
 }
 
-/* Ticket Delete Button */
+/* Delete button */
 .deleteButton {
   background-color: #e53935;
   color: #ffffff;
-  padding: 6px 16px;   /* smaller padding */
+  padding: 8px 18px;
   border: none;
   border-radius: 8px;
-  font-size: 0.85rem;  /* slightly smaller text */
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
 
 .deleteButton:hover {
   background-color: #ef5350;
+  transform: scale(1.05);
+}
+
+/* Confirm button */
+.confirmButton {
+  background-color: #f5c518;
+  color: #1e1e2f;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  margin-top: 20px;
+}
+
+.confirmButton:hover {
+  background-color: #ffe066;
+  transform: scale(1.02);
+}
+
+/* Total price */
+.totalPrice {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 15px;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .ticketItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ticketInfo {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .seatInfo, .priceInfo {
+    width: 100%;
+    text-align: left;
+  }
+
+  .deleteButton {
+    align-self: flex-end;
+    margin-top: 10px;
+  }
 }
 

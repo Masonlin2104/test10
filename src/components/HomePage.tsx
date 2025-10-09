@@ -28,9 +28,13 @@ const HomePage: React.FC = () => {
       {/* Header */}
       <header className={styles.header}>
         <h1 className={styles.title}>Cinema E-Booking System</h1>
-        <Link to="/login">
-          <button className={styles.loginButton}>Login</button>
-        </Link>
+        <div>
+          <Link to="/login">
+            <button className={styles.loginButton}>Login</button>
+          </Link>
+          {/* Create Account button */}
+          <button className={styles.createButton}>Create Account</button>
+        </div>
       </header>
 
       {/* Search Bar */}

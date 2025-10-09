@@ -11,7 +11,10 @@ import OrderConfirmation from './components/OrderConfrimation';
 import RegistrationForm from './components/RegistrationForm';
 import RegistrationConfirmation from './components/RegistrationConfirmation';
 import TicketSelection from "./components/TicketSelection";
+import AdminManageMovies from "./components/AdminManageMovies";
 import './App.css';
+import AdminHomePage from './components/AdminHomePage';
+import CreateAccount from './components/CreateAccount';
 
 function App() {
   const handleConfirm = (tickets: number) => {
@@ -24,6 +27,7 @@ function App() {
       <Route path="/home" element={<HomePage />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/EditProfile" element={<EditProfile />} />
+      <Route path="/CreateAccount" element={<CreateAccount />} />
       <Route path="/Checkout" element={<CheckoutForm />} />
       <Route 
             path="/RegistrationConfirmation" 
@@ -33,6 +37,10 @@ function App() {
       {/* Movie selection and details */}
       <Route path="/MovieList" element={<MovieList movies={sampleMovies} />} />
       <Route path="/MovieDetails" element={<MovieDetails />} />
+
+      {/* Admin pages */}
+      <Route path="/AdminManageMovies" element={<AdminManageMovies />} />
+      <Route path="/AdminHomePage" element={<AdminHomePage />} />
 
       {/* Ticket selection */}
       <Route

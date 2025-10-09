@@ -42,6 +42,23 @@ body {
   background-color: #e04343;
 }
 
+/* Create Account button style */
+.createButton {
+  padding: 10px 18px;
+  margin-left: 10px; /* space between Login and Create Account */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.createButton:hover {
+  background-color: #449d48;
+}
+
 .searchBar {
   display: flex;
   justify-content: center;

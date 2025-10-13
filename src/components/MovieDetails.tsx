@@ -24,8 +24,6 @@ const MovieDetails: React.FC = () => {
       {/* Optional: other metadata */}
       {/* <p className={styles.details}>
         <strong>Genre:</strong> {movie.genre} <br />
-        <strong>Duration:</strong> {movie.duration} <br />
-        <strong>Rating:</strong> {movie.rating}
       </p> */}
 
       <h3>Showtimes:</h3>

@@ -16,15 +16,17 @@ public class Movie {
     @Column(name = "trailer_url")
     private String trailerUrl;
     private String status; // running / comingSoon
+    private String genre;
 
     public Movie() {}
 
-    public Movie(String title, String description, String posterUrl, String trailerUrl, String status) {
+    public Movie(String title, String description, String posterUrl, String trailerUrl, String status, String genre) {
         this.title = title;
         this.description = description;
         this.posterUrl = posterUrl;
         this.trailerUrl = trailerUrl;
         this.status = status;
+        this.genre = genre;
     }
 
     // Getters and setters

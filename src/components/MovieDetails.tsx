@@ -20,24 +20,30 @@ const MovieDetails: React.FC = () => {
 
       {/* ✅ Add your unique movie description */}
       <p className={styles.description}>{movie.description}</p>
+      {/* <p className={styles.description}>{movie.genre}</p> */}
 
       {/* Optional: other metadata */}
       {/* <p className={styles.details}>
         <strong>Genre:</strong> {movie.genre} <br />
+        <strong>Duration:</strong> {movie.duration} <br />
+        <strong>Rating:</strong> {movie.rating}
       </p> */}
 
-      <h3>Showtimes:</h3>
-      {movie.showtimes && movie.showtimes.length > 0 ? (
-        <ul className={styles.showTimeList}>
-          {movie.showtimes.map((time) => (
-            <li key={time} className={styles.showTimeItem}>{time}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No showtimes available.</p>
-      )}
+      <header className={"Showtimes"}>
+        <h1>Showtimes</h1>
+        <div>
+          <Link to="/TicketSelection">
+            <button className={styles.loginButton}>5:00</button>
+          </Link>
+          <Link to="/TicketSelection">
+            <button className={styles.loginButton}>8:00</button>
+          </Link>
+          <Link to="/TicketSelection">
+            <button className={styles.loginButton}>10:00</button>
+          </Link>
+        </div>
+      </header>
 
-      <button onClick={() => navigate(-1)} className={styles.backButton}>Back</button>
     </div>
   );
 };

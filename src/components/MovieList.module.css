@@ -1,99 +1,131 @@
-/* src/components/MovieList.module.css */
+/* MovieDetails.module.css */
 
-/* Background for the page */
-body {
-  background-color: #1e1e2f; 
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
-}
-
-/* Container for the entire movie list including heading */
-.listContainer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Arial', sans-serif;
-  color: #1e1e2f;
-}
-
-/* Heading box above the grid */
-.listHeading {
-  background-color: #1e1e2f;
-  color: #f5c518;
-  text-align: center;
-  padding: 12px 0;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
-/* Grid for movie cards */
-.movieGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
-  justify-items: center; 
-}
-
-/* Individual movie card */
-.movieCard {
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 24px;
   background-color: #ffffff;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Inter", sans-serif;
+}
+
+.header {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.3s;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
 }
 
-.movieCard:hover {
-  transform: scale(1.05);
-}
-
-/* Poster image (same size for all) */
 .poster {
-  width: 100%;
-  height: 400px;
-  object-fit: cover; 
+  width: 250px;
+  height: 375px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Movie info below poster */
-.movieInfo {
-  padding: 15px;
-  width: 100%;
+.info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.genre,
+.status {
+  margin: 6px 0;
+  color: #555;
+  font-size: 1rem;
+}
+
+.detailsSection {
+  margin-top: 24px;
+}
+
+.detailsSection h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.description {
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.showTimeList {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
 }
 
-.movieTitle {
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  text-align: center;
+.showTimeItem {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
 }
 
-.trailer {
-  width: 100%;
-  height: 200px;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 10px;
+.showTimeItem:hover {
+  background-color: #0056b3;
 }
 
-.bookButton {
-  padding: 10px 18px;
-  background-color: #f5c518;
-  color: #1e1e2f;
+.backButton {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
+  transition: background-color 0.2s ease;
 }
 
-.bookButton:hover {
-  background-color: #e5b310;
+.backButton:hover {
+  background-color: #555;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.showtimes {
+  display: flex;
+  gap: 16px;
+  margin: 12px 0 24px;
+}
+
+.timeBox {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.timeBox:hover {
+  background-color: #0056b3;
 }

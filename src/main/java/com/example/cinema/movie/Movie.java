@@ -18,6 +18,8 @@ public class Movie {
     private String status; // running / comingSoon
     private String genre;
 
+    
+
     public Movie() {}
 
     public Movie(String title, String description, String posterUrl, String trailerUrl, String status, String genre) {
@@ -36,6 +38,9 @@ public class Movie {
     public String getPosterUrl() { return posterUrl; }
     public String getTrailerUrl() { return trailerUrl; }
     public String getStatus() { return status; }
+    public String getGenre() { return genre; }
+
+    public void setGenre(String genre) { this.genre = genre; }
 
     public void setId(Long id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }

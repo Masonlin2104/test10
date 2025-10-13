@@ -37,6 +37,38 @@ const TicketSelection: React.FC<TicketSelectionProps> = ({ movieTitle, onConfirm
           Confirm Tickets
         </button>
       </form>
+      <form onSubmit={handleSubmit}>
+        <div className={styles.inputGroup}>
+          <label className={styles.label}>Age of Tickets</label>
+          <input
+            type="number"
+            min={1}
+            max={10}
+            value={tickets}
+            onChange={(e) => setTickets(parseInt(e.target.value))}
+            className={styles.input}
+          />
+        </div>
+        <button type="submit" className={styles.submitButton}>
+          Confirm Tickets
+        </button>
+      </form>
+      <form onSubmit={handleSubmit}>
+        <div className={styles.inputGroup}>
+          <label className={styles.label}>Select Seats</label>
+          <input
+            type="number"
+            min={1}
+            max={10}
+            value={tickets}
+            onChange={(e) => setTickets(parseInt(e.target.value))}
+            className={styles.input}
+          />
+        </div>
+        <button type="submit" className={styles.submitButton}>
+          Confirm Tickets
+        </button>
+      </form>
     </div>
   );
 };

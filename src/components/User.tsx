@@ -1,45 +1,60 @@
-// src/components/HomePage.tsx
-
-import React, { useState } from "react";
-import { sampleMovies as movies } from "../data/movies";
-import { Movie } from "../models/Movie";
+import React, { useEffect, useState } from "react";
 import styles from "./HomePage.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
 
-const User: React.FC = () => {
+interface Movie {
+  id: number;
+  title: string;
+  description: string;
+  posterUrl: string;
+  trailerUrl: string;
+  status: string; // running / comingSoon
+}
+
+const HomePage: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-  const { user } = useAuth();
 
-  // Filter movies based on search
-  const filteredMovies: Movie[] = movies.filter((movie) =>
+  // Fetch movies from backend
+  useEffect(() => {
+  fetch("http://localhost:8080/movies")
+    .then((res) => res.json())
+    .then((data) => Array.isArray(data) ? setMovies(data) : setMovies([]))
+    .catch(() => setMovies([]));
+}, []);
+
+
+
+  // Filter based on search
+  const filteredMovies = movies.filter((movie) =>
     movie.title.toLowerCase().includes(search.toLowerCase())
   );
 
-  const currentlyRunning: Movie[] = filteredMovies.filter((movie) => movie.status === "running");
-  const comingSoon: Movie[] = filteredMovies.filter((movie) => movie.status === "comingSoon");
+  // Divide by status
+  const currentlyRunning = filteredMovies.filter(
+    (movie) => movie.status === "running"
+  );
+  const comingSoon = filteredMovies.filter(
+    (movie) => movie.status === "comingSoon"
+  );
 
-  // Navigate to MovieDetails and pass the selected movie
+  // Navigate to MovieDetails
   const handleBookMovie = (movie: Movie) => {
     navigate("/MovieDetails", { state: { movie } });
   };
 
   return (
     <div className={styles.container}>
-      {/* Header */}
+      {/* ===== Header ===== */}
       <header className={styles.header}>
         <h1 className={styles.title}>Cinema E-Booking System</h1>
         <div>
-          {user && (
-            <h2 className={styles.greeting}>
-                Hello, {user.name}!
-            </h2>
-        )}
+          
         </div>
       </header>
 
-      {/* Search Bar */}
+      {/* ===== Search Bar ===== */}
       <div className={styles.searchBar}>
         <input
           type="text"
@@ -50,13 +65,17 @@ const User: React.FC = () => {
         />
       </div>
 
-      {/* Currently Running Movies */}
+      {/* ===== Currently Running Movies ===== */}
       <section>
         <h2 className={styles.sectionTitle}>Currently Running</h2>
         <div className={styles.movieGrid}>
-          {currentlyRunning.map((movie: Movie) => (
+          {currentlyRunning.map((movie) => (
             <div key={movie.id} className={styles.movieCard}>
-              <img src={movie.posterUrl} alt={movie.title} className={styles.poster} />
+              <img
+                src={movie.posterUrl}
+                alt={movie.title}
+                className={styles.poster}
+              />
               <div className={styles.movieInfo}>
                 <h3 className={styles.movieTitle}>{movie.title}</h3>
                 <iframe
@@ -78,13 +97,17 @@ const User: React.FC = () => {
         </div>
       </section>
 
-      {/* Coming Soon Movies */}
+      {/* ===== Coming Soon Movies ===== */}
       <section style={{ marginTop: "40px" }}>
         <h2 className={styles.sectionTitle}>Coming Soon</h2>
         <div className={styles.movieGrid}>
-          {comingSoon.map((movie: Movie) => (
+          {comingSoon.map((movie) => (
             <div key={movie.id} className={styles.movieCard}>
-              <img src={movie.posterUrl} alt={movie.title} className={styles.poster} />
+              <img
+                src={movie.posterUrl}
+                alt={movie.title}
+                className={styles.poster}
+              />
               <div className={styles.movieInfo}>
                 <h3 className={styles.movieTitle}>{movie.title}</h3>
                 <iframe
@@ -109,4 +132,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default HomePage;

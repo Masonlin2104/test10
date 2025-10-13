@@ -16,6 +16,7 @@ import './App.css';
 import AdminHomePage from './components/AdminHomePage';
 import CreateAccount from './components/CreateAccount';
 import User from './components/User';
+import AdminPromotion from './components/AdminPromotions';
 
 function App() {
   const handleConfirm = (tickets: number) => {
@@ -43,6 +44,7 @@ function App() {
       {/* Admin pages */}
       <Route path="/AdminManageMovies" element={<AdminManageMovies />} />
       <Route path="/AdminHomePage" element={<AdminHomePage />} />
+      <Route path="/AdminPromotions" element={<AdminPromotion />} />
 
       {/* Ticket selection */}
       <Route

@@ -33,7 +33,9 @@ const HomePage: React.FC = () => {
             <button className={styles.loginButton}>Login</button>
           </Link>
           {/* Create Account button */}
-          <button className={styles.createButton}>Create Account</button>
+          <Link to ="/CreateAccount">
+            <button className={styles.createButton}>Create Account</button>
+          </Link>
         </div>
       </header>
 

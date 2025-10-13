@@ -1,38 +1,44 @@
-// src/components/MovieDetails.tsx
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { Movie } from "../models/Movie";
 import styles from "./MovieDetails.module.css";
 
-interface Movie {
-  id: number;
-  title: string;
-  posterUrl: string;
-  showTimes: string[];
-}
 
 const MovieDetails: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const movie = location.state?.movie as Movie | undefined;
+  const movie = location.state?.movie as Movie;
 
   if (!movie) {
-    return <div className={styles.container}><p>Movie not found.</p></div>;
+    return <p>Movie not found. Please go back.</p>;
   }
-  
+
   return (
     <div className={styles.container}>
-      <h2>{movie.title}</h2>
+      <h2 className={styles.title}>{movie.title}</h2>
       <img src={movie.posterUrl} alt={`${movie.title} poster`} className={styles.poster} />
+
+      {/* ✅ Add your unique movie description */}
+      <p className={styles.description}>{movie.description}</p>
+
+      {/* Optional: other metadata */}
+      {/* <p className={styles.details}>
+        <strong>Genre:</strong> {movie.genre} <br />
+        <strong>Duration:</strong> {movie.duration} <br />
+        <strong>Rating:</strong> {movie.rating}
+      </p> */}
+
       <h3>Showtimes:</h3>
-      {movie.showTimes && movie.showTimes.length > 0 ? (
+      {movie.showtimes && movie.showtimes.length > 0 ? (
         <ul className={styles.showTimeList}>
-          {movie.showTimes.map((time) => (
+          {movie.showtimes.map((time) => (
             <li key={time} className={styles.showTimeItem}>{time}</li>
           ))}
         </ul>
       ) : (
         <p>No showtimes available.</p>
       )}
+
       <button onClick={() => navigate(-1)} className={styles.backButton}>Back</button>
     </div>
   );

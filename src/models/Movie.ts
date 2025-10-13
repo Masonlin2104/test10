@@ -7,4 +7,5 @@ export interface Movie {
   posterUrl: string;  // URL for the movie poster
   description?: string; // Optional description
   releaseDate?: string; // Optional release date
+  showtimes: string[];
 }

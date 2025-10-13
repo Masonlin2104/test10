@@ -15,6 +15,7 @@ import AdminManageMovies from "./components/AdminManageMovies";
 import './App.css';
 import AdminHomePage from './components/AdminHomePage';
 import CreateAccount from './components/CreateAccount';
+import User from './components/User';
 
 function App() {
   const handleConfirm = (tickets: number) => {
@@ -29,6 +30,7 @@ function App() {
       <Route path="/EditProfile" element={<EditProfile />} />
       <Route path="/CreateAccount" element={<CreateAccount />} />
       <Route path="/Checkout" element={<CheckoutForm />} />
+      <Route path="/User" element={<User />} />
       <Route 
             path="/RegistrationConfirmation" 
             element={<RegistrationConfirmation name='Mason'/>} />

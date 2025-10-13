@@ -1,25 +1,48 @@
 // src/components/LoginForm.tsx
-
 import React, { useState } from "react";
 import styles from "./LoginForm.module.css";
+import { useAuth } from "../auth/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
+
+const roleToHome: Record<string, string> = {
+  admin: "/admin",
+  manager: "/manager",
+  user: "/user",
+};
 
 const LoginForm: React.FC = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation() as any;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simple validation
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
     }
 
-    setError("");
-    console.log("Logging in with:", { email, password });
-    // Here you would normally call an API or handle authentication
+    try {
+      setError("");
+      const user = await login(email, password);
+
+      // If user was redirected here, go back to where they came from,
+      // otherwise route by role.
+      const from = location.state?.from?.pathname as string | undefined;
+      if (from) {
+        navigate(from, { replace: true });
+      } else {
+        const dest = roleToHome[user.role] ?? "/user";
+        navigate(dest, { replace: true });
+      }
+    } catch (err: any) {
+      setError(err?.message || "Login failed");
+    }
   };
 
   return (
@@ -35,6 +58,7 @@ const LoginForm: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
+            autoComplete="username"
           />
         </div>
 
@@ -47,6 +71,7 @@ const LoginForm: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
+            autoComplete="current-password"
           />
         </div>
 

@@ -1,5 +1,5 @@
 // src/components/LoginForm.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./LoginForm.module.css";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -17,7 +17,17 @@ const LoginForm: React.FC = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+
+  // Prefill email if saved in localStorage
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,8 +41,14 @@ const LoginForm: React.FC = () => {
       setError("");
       const user = await login(email, password);
 
-      // If user was redirected here, go back to where they came from,
-      // otherwise route by role.
+      // Save email if Remember Me is checked
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
+      // Redirect to previous page if redirected here
       const from = location.state?.from?.pathname as string | undefined;
       if (from) {
         navigate(from, { replace: true });
@@ -48,7 +64,9 @@ const LoginForm: React.FC = () => {
   return (
     <div className={styles.formContainer}>
       <h2 className={styles.heading}>Login</h2>
+
       <form onSubmit={handleSubmit}>
+        {/* Email */}
         <div className={styles.inputGroup}>
           <label htmlFor="email" className={styles.label}>Email</label>
           <input
@@ -62,6 +80,7 @@ const LoginForm: React.FC = () => {
           />
         </div>
 
+        {/* Password */}
         <div className={styles.inputGroup}>
           <label htmlFor="password" className={styles.label}>Password</label>
           <input
@@ -75,13 +94,32 @@ const LoginForm: React.FC = () => {
           />
         </div>
 
+        {/* Remember Me */}
+        <div className={styles.checkboxGroup}>
+          <input
+            id="rememberMe"
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          <label htmlFor="rememberMe" className={styles.checkboxLabel}>
+            Remember Me
+          </label>
+        </div>
+
+        {/* Error */}
         {error && <p className={styles.errorMessage}>{error}</p>}
 
-        <button type="submit" className={styles.submitButton}>
-          Login
-        </button>
+        {/* Submit Button */}
+        <button type="submit" className={styles.submitButton}>Login</button>
 
-        <p className={styles.smallText}>Forgot your password?</p>
+        {/* Forgot Password */}
+        <p
+          className={styles.linkText}
+          onClick={() => navigate("/forgot-password")}
+        >
+          Forgot your password?
+        </p>
       </form>
     </div>
   );

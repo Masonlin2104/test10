@@ -30,8 +30,9 @@ function App() {
       <Route path="/login" element={<LoginForm />} />
       <Route path="/EditProfile" element={<EditProfile />} />
       <Route path="/CreateAccount" element={<CreateAccount />} />
-      <Route path="/Checkout" element={<CheckoutForm />} />
+      <Route path="/Checkout" element={<CheckoutForm />} /> 
       <Route path="/User" element={<User />} />
+      <Route path="/RegistrationForm" element={<RegistrationForm />} />
       <Route 
             path="/RegistrationConfirmation" 
             element={<RegistrationConfirmation name='Mason'/>} />

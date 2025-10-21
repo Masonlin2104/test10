@@ -2,18 +2,34 @@ import React, { useState } from "react";
 import styles from "./RegistrationForm.module.css";
 
 const RegistrationForm: React.FC = () => {
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [userID, setUserID] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [registerForPromo, setRegisterForPromo] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simple validation
-    if (!fullName || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields.");
+    // Validation
+    if (
+      !firstName ||
+      !lastName ||
+      !userID ||
+      !address ||
+      !phoneNumber ||
+      !email ||
+      !password ||
+      !confirmPassword
+    ) {
+      setError("Please fill in all required fields.");
       return;
     }
 
@@ -22,27 +38,114 @@ const RegistrationForm: React.FC = () => {
       return;
     }
 
+    if (registerForPromo && !promoCode) {
+      setError("Please enter a promo code.");
+      return;
+    }
+
     setError("");
-    console.log("Registering user:", { fullName, email, password });
-    // Normally, call API or registration logic here
+
+    // Logging all registration data
+    console.log("Registering user:", {
+      userID,
+      firstName,
+      middleName,
+      lastName,
+      address,
+      phoneNumber,
+      email,
+      password,
+      registerForPromo,
+      promoCode,
+    });
+
+    //
   };
 
   return (
     <div className={styles.formContainer}>
-      <h2 className={styles.heading}>Registration Form</h2> {/* Dark banner heading */}
+      <h2 className={styles.heading}>Registration Form</h2>
+
       <form onSubmit={handleSubmit}>
+        {/* User ID */}
         <div className={styles.inputGroup}>
-          <span className={styles.label}>Full Name</span> 
+          <label htmlFor="userID" className={styles.label}>User ID</label>
           <input
-            id="fullName"
+            id="userID"
             type="text"
             className={styles.input}
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Enter your full name"
+            value={userID}
+            onChange={(e) => setUserID(e.target.value)}
+            placeholder="Enter a unique user ID"
           />
         </div>
 
+        {/* First Name */}
+        <div className={styles.inputGroup}>
+          <label htmlFor="firstName" className={styles.label}>First Name</label>
+          <input
+            id="firstName"
+            type="text"
+            className={styles.input}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="Enter your first name"
+          />
+        </div>
+
+        {/* Middle Name */}
+        <div className={styles.inputGroup}>
+          <label htmlFor="middleName" className={styles.label}>Middle Name</label>
+          <input
+            id="middleName"
+            type="text"
+            className={styles.input}
+            value={middleName}
+            onChange={(e) => setMiddleName(e.target.value)}
+            placeholder="Enter your middle name (optional)"
+          />
+        </div>
+
+        {/* Last Name */}
+        <div className={styles.inputGroup}>
+          <label htmlFor="lastName" className={styles.label}>Last Name</label>
+          <input
+            id="lastName"
+            type="text"
+            className={styles.input}
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Enter your last name"
+          />
+        </div>
+
+        {/* Address */}
+        <div className={styles.inputGroup}>
+          <label htmlFor="address" className={styles.label}>Address</label>
+          <input
+            id="address"
+            type="text"
+            className={styles.input}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Enter your address"
+          />
+        </div>
+
+        {/* Phone Number */}
+        <div className={styles.inputGroup}>
+          <label htmlFor="phoneNumber" className={styles.label}>Phone Number</label>
+          <input
+            id="phoneNumber"
+            type="tel"
+            className={styles.input}
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Enter your phone number"
+          />
+        </div>
+
+        {/* Email */}
         <div className={styles.inputGroup}>
           <label htmlFor="email" className={styles.label}>Email</label>
           <input
@@ -55,6 +158,7 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
+        {/* Password */}
         <div className={styles.inputGroup}>
           <label htmlFor="password" className={styles.label}>Password</label>
           <input
@@ -67,6 +171,7 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
+        {/* Confirm Password */}
         <div className={styles.inputGroup}>
           <label htmlFor="confirmPassword" className={styles.label}>Confirm Password</label>
           <input
@@ -79,12 +184,38 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
+        {/* Register for Promotions */}
+        <div className={styles.checkboxGroup}>
+          <input
+            id="registerForPromo"
+            type="checkbox"
+            checked={registerForPromo}
+            onChange={(e) => setRegisterForPromo(e.target.checked)}
+          />
+          <label htmlFor="registerForPromo" className={styles.checkboxLabel}>
+            Register for Promotions
+          </label>
+        </div>
+
+        {/* Promo Code (visible only when checkbox is checked) */}
+        {registerForPromo && (
+          <div className={styles.inputGroup}>
+            <label htmlFor="promoCode" className={styles.label}>Promo Code</label>
+            <input
+              id="promoCode"
+              type="text"
+              className={styles.input}
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder="Enter your promo code"
+            />
+          </div>
+        )}
+
+        {/* Error Message */}
         {error && <p className={styles.errorMessage}>{error}</p>}
 
-        <button type="submit" className={styles.submitButton}>
-          Register
-        </button>
-
+        <button type="submit" className={styles.submitButton}>Register</button>
         <p className={styles.smallText}>Already have an account? Login here.</p>
       </form>
     </div>

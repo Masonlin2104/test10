@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import LoginForm from './components/LoginForm';
 import CheckoutForm from './components/CheckoutForm';
@@ -12,11 +12,14 @@ import RegistrationForm from './components/RegistrationForm';
 import RegistrationConfirmation from './components/RegistrationConfirmation';
 import TicketSelection from "./components/TicketSelection";
 import AdminManageMovies from "./components/AdminManageMovies";
-import './App.css';
 import AdminHomePage from './components/AdminHomePage';
 import CreateAccount from './components/CreateAccount';
 import User from './components/User';
 import AdminPromotion from './components/AdminPromotions';
+import './App.css';
+
+// Import the new EmailVerification component
+import EmailVerification from './components/EmailVerification';
 
 function App() {
   const handleConfirm = (tickets: number) => {
@@ -26,6 +29,7 @@ function App() {
   return (
     <Routes>
       {/* Main pages */}
+      <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/EditProfile" element={<EditProfile />} />
@@ -33,10 +37,10 @@ function App() {
       <Route path="/Checkout" element={<CheckoutForm />} /> 
       <Route path="/User" element={<User />} />
       <Route path="/RegistrationForm" element={<RegistrationForm />} />
+      <Route path="/verify" element={<EmailVerification />} />
       <Route 
             path="/RegistrationConfirmation" 
             element={<RegistrationConfirmation name='Mason'/>} />
-
 
       {/* Movie selection and details */}
       <Route path="/MovieList" element={<MovieList movies={sampleMovies} />} />
@@ -67,12 +71,6 @@ function App() {
           />
         }
       />
-
-      
-        
-         
-            
-            
     </Routes>
   );
 }

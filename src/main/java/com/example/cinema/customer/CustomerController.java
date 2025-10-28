@@ -1,7 +1,11 @@
 package com.example.cinema.customer;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import java.util.UUID;
 import jakarta.transaction.Transactional;
 
 import com.example.cinema.dto.RegisterRequest;
@@ -22,6 +26,9 @@ public class CustomerController {
     private final PaymentMethodRepository paymentMethodRepository;
     private final BillingAddressRepository billingAddressRepository;
     private final CustomerPaymentMethodRepository customerPaymentMethodRepository;
+    
+    @Autowired
+    private JavaMailSender mailSender;
 
     public CustomerController(
         CustomerRepository customerRepository, 
@@ -37,12 +44,98 @@ public class CustomerController {
         this.customerPaymentMethodRepository = customerPaymentMethodRepository;
     }
 
+    // ========== REGISTRATION WITH EMAIL VERIFICATION ==========
+    @PostMapping("/register")
+    @Transactional
+    public String register(@RequestBody RegisterRequest request) {
+        // Validation
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email is required");
+        }
+        if (request.getPassword() == null || request.getPassword().length() < 6) {
+            throw new RuntimeException("Password must be at least 6 characters");
+        }
+        if (request.getFirstName() == null || request.getFirstName().trim().isEmpty()) {
+            throw new RuntimeException("First name is required");
+        }
+        if (request.getLastName() == null || request.getLastName().trim().isEmpty()) {
+            throw new RuntimeException("Last name is required");
+        }
+        
+        // Check if email already exists
+        if (customerRepository.findByEmail(request.getEmail().toLowerCase()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // Generate verification code
+        String verificationCode = UUID.randomUUID().toString();
+
+        // Create customer
+        Customer customer = new Customer();
+        customer.setFirstName(request.getFirstName());
+        customer.setLastName(request.getLastName());
+        customer.setEmail(request.getEmail().toLowerCase());
+        customer.setPhoneNumber(request.getPhoneNumber());
+        customer.setPassword(request.getPassword()); // In production, hash this!
+        customer.setVerificationCode(verificationCode);
+        
+        // Set status: 1 = Inactive (pending verification), 2 = Active
+        customer.setCustomerStatusId(1);
+
+        customerRepository.save(customer);
+
+        // Send verification email
+        try {
+            sendVerificationEmail(customer.getEmail(), verificationCode);
+        } catch (Exception e) {
+            // Log error but don't fail registration
+            System.err.println("Failed to send verification email: " + e.getMessage());
+        }
+
+        return "Registration successful! Please check your email to verify your account.";
+    }
+
+    // ========== EMAIL VERIFICATION ==========
+    @GetMapping("/verify")
+    @Transactional
+    public String verifyCustomer(@RequestParam("code") String verificationCode) {
+        Customer customer = customerRepository.findByVerificationCode(verificationCode)
+            .orElseThrow(() -> new RuntimeException("Invalid verification code"));
+        
+        // Activate customer account
+        customer.setCustomerStatusId(2); // 2 = Active
+        customer.setVerificationCode(null); // Clear code after verification
+        customerRepository.save(customer);
+        
+        return "Email verified successfully! You can now login.";
+    }
+
+    // Helper method to send verification email
+    private void sendVerificationEmail(String email, String verificationCode) {
+        String verificationUrl = "http://localhost:3000/verify?code=" + verificationCode;
+        
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Cinema E-Booking - Email Verification");
+        message.setText(
+            "Thank you for registering with Cinema E-Booking!\n\n" +
+            "Please verify your email address by clicking the link below:\n" +
+            verificationUrl + "\n\n" +
+            "If you did not create this account, please ignore this email.\n\n" +
+            "Best regards,\n" +
+            "Cinema E-Booking Team"
+        );
+        message.setFrom("noreply@cinemabooking.com");
+        
+        mailSender.send(message);
+    }
+
     // ========== GET CUSTOMER INFO ==========
     @GetMapping("/{customerId}")
     public Customer getCustomer(@PathVariable Integer customerId) {
         Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() -> new RuntimeException("Customer not found"));
-        customer.setPassword(null); // Don't send password to frontend
+        customer.setPassword(null);
         return customer;
     }
 
@@ -75,12 +168,10 @@ public class CustomerController {
         Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() -> new RuntimeException("Customer not found"));
         
-        // Verify current password
         if (!customer.getPassword().equals(request.currentPassword)) {
             throw new RuntimeException("Current password is incorrect");
         }
         
-        // Update to new password
         customer.setPassword(request.newPassword);
         customerRepository.save(customer);
         
@@ -147,11 +238,9 @@ public class CustomerController {
     @PostMapping("/{customerId}/payment-methods")
     @Transactional
     public PaymentMethod addPaymentMethod(@PathVariable Integer customerId, @RequestBody PaymentMethodRequest request) {
-        // Verify customer exists
         customerRepository.findById(customerId)
             .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        // Save billing address
         BillingAddress billingAddress = new BillingAddress();
         billingAddress.setStreetAddress(request.billingAddressRequest.streetAddress);
         billingAddress.setCity(request.billingAddressRequest.city);
@@ -159,7 +248,6 @@ public class CustomerController {
         billingAddress.setZipCode(request.billingAddressRequest.zipCode);
         billingAddress = billingAddressRepository.save(billingAddress);
 
-        // Save payment method
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setCardNumber(Integer.parseInt(request.cardNumber));
         paymentMethod.setExpirationMonth(request.expirationMonth);
@@ -168,7 +256,6 @@ public class CustomerController {
         paymentMethod.setBillingAddressId(billingAddress.getId());
         paymentMethod = paymentMethodRepository.save(paymentMethod);
 
-        // Link to customer
         CustomerPaymentMethod customerPaymentMethod = new CustomerPaymentMethod();
         customerPaymentMethod.setCustomerId(customerId);
         customerPaymentMethod.setPaymentMethodId(paymentMethod.getId());
@@ -191,19 +278,15 @@ public class CustomerController {
     @DeleteMapping("/{customerId}/payment-methods/{paymentMethodId}")
     @Transactional
     public String deletePaymentMethod(@PathVariable Integer customerId, @PathVariable Integer paymentMethodId) {
-        // Remove link
         customerPaymentMethodRepository.deleteByCustomerIdAndPaymentMethodId(customerId, paymentMethodId);
         
-        // Get payment method
         PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId)
             .orElseThrow(() -> new RuntimeException("Payment method not found"));
         
         Integer billingAddressId = paymentMethod.getBillingAddressId();
         
-        // Delete payment method
         paymentMethodRepository.deleteById(paymentMethodId);
         
-        // Delete billing address if not used by other cards
         if (billingAddressId != null) {
             if (!paymentMethodRepository.existsByBillingAddressId(billingAddressId)) {
                 billingAddressRepository.deleteById(billingAddressId);
@@ -220,63 +303,31 @@ public class CustomerController {
         Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() -> new RuntimeException("Customer not found"));
         
-        // Assuming customerStatusId: 1 = no promo, 2 = with promo
-        // Adjust based on your actual CustomerStatus table
         if (request.enabled) {
-            customer.setCustomerStatusId(2); // Opted in
+            customer.setCustomerStatusId(2);
         } else {
-            customer.setCustomerStatusId(1); // Not opted in
+            customer.setCustomerStatusId(1);
         }
         
         customerRepository.save(customer);
         return "Promotion preference updated";
     }
 
-    // ========== REGISTRATION ==========
-    @PostMapping("/register")
-    public Customer register(@RequestBody RegisterRequest request) {
-        if (customerRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        Customer customer = new Customer();
-        customer.setFirstName(request.getFirstName());
-        customer.setLastName(request.getLastName());
-        customer.setEmail(request.getEmail().toLowerCase());
-        customer.setPhoneNumber(request.getPhoneNumber());
-        customer.setPassword(request.getPassword());
-        customer.setCustomerStatusId(1);
-
-        return customerRepository.save(customer);
-    }
-
     // ========== LOGIN ==========
     @PostMapping("/login")
     public Customer login(@RequestBody LoginRequest request) {
         Customer customer = customerRepository.findByEmail(request.getEmail().toLowerCase())
-            .orElseThrow(() -> new RuntimeException("Invalid email"));
+            .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
         if (!request.getPassword().equals(customer.getPassword())) {
-            throw new RuntimeException("Incorrect password");
+            throw new RuntimeException("Invalid email or password");
         }
-        if (customer.getCustomerStatusId() != 2) {
+        
+        if (customer.getCustomerStatusId() == 1) {
             throw new RuntimeException("Please verify your email before logging in");
         }
 
         customer.setPassword(null);
         return customer;
-    }
-
-    // ========== EMAIL VERIFICATION ==========
-    @GetMapping("/verify")
-    public String verifyCustomer(@RequestParam("verificationCode") String verificationCode) {
-        Customer customer = customerRepository.findByVerificationCode(verificationCode)
-            .orElseThrow(() -> new RuntimeException("Invalid code"));
-        
-        customer.setCustomerStatusId(2); 
-        customer.setVerificationCode(null);
-        customerRepository.save(customer);
-        
-        return "Email verified";
     }
 }

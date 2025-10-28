@@ -4,9 +4,11 @@ public class RegisterRequest {
     private String firstName;
     private String lastName;
     private String email;
-    private int phoneNumber;
+    private Integer phoneNumber;
     private String password;
+    private Boolean registerForPromo;
 
+    // Getters and Setters
     public String getFirstName() {
         return firstName;
     }
@@ -25,10 +27,10 @@ public class RegisterRequest {
     public void setEmail(String email) {
         this.email = email;
     }
-    public int getPhoneNumber() {
+    public Integer getPhoneNumber() {
         return phoneNumber;
     }
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(Integer phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
     public String getPassword() {
@@ -37,6 +39,10 @@ public class RegisterRequest {
     public void setPassword(String password) {
         this.password = password;   
     }
-    
+    public Boolean getRegisterForPromo() {
+        return registerForPromo;
+    }
+    public void setRegisterForPromo(Boolean registerForPromo) {
+        this.registerForPromo = registerForPromo;
+    }
 }
-

@@ -13,6 +13,9 @@ const RegistrationForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [registerForPromo, setRegisterForPromo] = useState(false);
+  const [promoRegisterOptIn, setPromoRegisterOptIn] = useState(false); // new checkbox
+  const [promoCode, setPromoCode] = useState(""); // input for new checkbox
+  const [promoOptIn, setPromoOptIn] = useState(false);
   
   // UI state
   const [error, setError] = useState("");
@@ -252,22 +255,44 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
-        {/* Register for Promotions */}
-        <div className={styles.checkboxGroup}>
+        {/* Manage Promotions & Dropdown */}
+        <div className={styles.checkboxRow}>
+          <div className={styles.checkboxGroup}>
           <input
-            id="registerForPromo"
+            id="promoOptIn"
             type="checkbox"
-            checked={registerForPromo}
-            onChange={(e) => setRegisterForPromo(e.target.checked)}
-            disabled={loading}
+            checked={promoOptIn}
+            onChange={(e) => setPromoOptIn(e.target.checked)}
           />
-          <label htmlFor="registerForPromo" className={styles.checkboxLabel}>
-            Register for Promotions (Optional)
+          <label htmlFor="promoOptIn" className={styles.checkboxLabel}>
+            Register for Promotions
           </label>
         </div>
-        <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "-10px", marginBottom: "15px" }}>
-          Receive special offers, movie updates, and exclusive deals via email
-        </p>
+
+        {promoOptIn && (
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Promo Code</label>
+            <input
+              type="text"
+              className={styles.input}
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder="Enter promo code"
+            />
+          </div>
+        )}
+
+
+          {/* Edit Payment Methods button */}
+          <button
+            type="button"
+            
+            className={styles.paymentButton}
+            onClick={() => navigate("/PaymentMethodsPage")}
+          >
+            Edit Payment Methods
+          </button>
+        </div>
 
         {/* Error Message */}
         {error && <p className={styles.errorMessage}>{error}</p>}

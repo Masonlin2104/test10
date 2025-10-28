@@ -16,10 +16,12 @@ import AdminHomePage from './components/AdminHomePage';
 import CreateAccount from './components/CreateAccount';
 import User from './components/User';
 import AdminPromotion from './components/AdminPromotions';
+import PaymentsMethodPage from './components/PaymentMethodsPage';
 import './App.css';
 
 // Import the new EmailVerification component
 import EmailVerification from './components/EmailVerification';
+import PaymentMethodsPage from './components/PaymentMethodsPage';
 
 function App() {
   const handleConfirm = (tickets: number) => {
@@ -37,6 +39,7 @@ function App() {
       <Route path="/Checkout" element={<CheckoutForm />} /> 
       <Route path="/User" element={<User />} />
       <Route path="/RegistrationForm" element={<RegistrationForm />} />
+      <Route path="/PaymentMethodsPage" element={<PaymentMethodsPage />} />
       <Route path="/verify" element={<EmailVerification />} />
       <Route 
             path="/RegistrationConfirmation" 

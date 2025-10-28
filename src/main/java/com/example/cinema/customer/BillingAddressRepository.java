@@ -1,4 +1,5 @@
 package com.example.cinema.customer;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface HomeAddressRepository extends JpaRepository<HomeAddress, Integer> {}
+public interface BillingAddressRepository extends JpaRepository<BillingAddress, Integer> {}

@@ -1,9 +1,10 @@
 package com.example.cinema.customer;
 
 import jakarta.persistence.*;
+
 @Entity
-@Table(name = "HomeAddress")
-public class HomeAddress {
+@Table(name = "BillingAddress")
+public class BillingAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,11 +24,11 @@ public class HomeAddress {
     public Integer getId() {
         return id;
     }
-   
+    
     public String getStreet() {
         return streetAddress;
     }
-    public void setStreet(String streetAddress) {
+    public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
     }
     public String getCity() {

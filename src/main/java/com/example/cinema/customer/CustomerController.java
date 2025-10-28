@@ -6,7 +6,8 @@ import jakarta.transaction.Transactional;
 
 import com.example.cinema.dto.RegisterRequest;
 import com.example.cinema.dto.HomeAddressRequest;
-import com.example.cinema.dto.LoginRequest; 
+import com.example.cinema.dto.LoginRequest;
+import com.example.cinema.dto.PaymentMethodRequest; 
 
 @RestController
 @RequestMapping("/customer")
@@ -14,11 +15,19 @@ public class CustomerController {
 
     private final CustomerRepository customerRepository;
     private final HomeAddressRepository homeAddressRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
+    private final BillingAddressRepository billingAddressRepository;
+    private final CustomerPaymentMethodRepository customerPaymentMethodRepository;
 
 
-    public CustomerController(CustomerRepository customerRepository, HomeAddressRepository homeAddressRepository) {
+
+    public CustomerController(CustomerRepository customerRepository, HomeAddressRepository homeAddressRepository, PaymentMethodRepository paymentMethodRepository,
+    BillingAddressRepository billingAddressRepository, CustomerPaymentMethodRepository customerPaymentMethodRepository) {
         this.customerRepository = customerRepository;
         this.homeAddressRepository = homeAddressRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
+        this.billingAddressRepository = billingAddressRepository;
+        this.customerPaymentMethodRepository = customerPaymentMethodRepository;
     }
 
     @PostMapping("/register")
@@ -40,8 +49,7 @@ public class CustomerController {
 
     @PostMapping("/login")
     public Customer login(@RequestBody LoginRequest request) {
-        Customer customer = customerRepository.findByEmail(request.getEmail().toLowerCase())
-                .orElseThrow(() -> new RuntimeException("Invalid email"));
+        Customer customer = customerRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new RuntimeException("Invalid email"));
 
         if (request.getPassword() != customer.getPassword()) {
             throw new RuntimeException("Incorrect password");
@@ -55,17 +63,13 @@ public class CustomerController {
     }
 
     @GetMapping("/verify")
-public String verifyCustomer(@RequestParam("token") String token) {
-    Customer customer = customerRepository.findByVerificationToken(token)
-        .orElseThrow(() -> new RuntimeException("Invalid token"));
-
-    customer.setCustomerStatusId(2); 
-    customer.setVerificationToken(null);
-    customerRepository.save(customer);
-
-    return "Email verified successfully!";
-}
-
+    public String verifyCustomer(@RequestParam("verificationCode") String verificationCode) {
+        Customer customer = customerRepository.findByVerificationCode(verificationCode).orElseThrow(() -> new RuntimeException("Invalid code"));
+         customer.setCustomerStatusId(2); 
+         customer.setVerificationCode(null);
+         customerRepository.save(customer);
+         return "Email verified";
+    }
 
     @PostMapping("/{customerId}/home-address")
     @Transactional
@@ -92,13 +96,58 @@ public String verifyCustomer(@RequestParam("token") String token) {
         if (customer.getHomeAddressId() == null)
             throw new RuntimeException("No previously saved home address found");
 
-        HomeAddress address = homeAddressRepository.findById(customer.getHomeAddressId())
-                .orElseThrow(() -> new RuntimeException("Address missing"));
-        address.setStreet(request.streetAddress);
-        address.setCity(request.city);
-        address.setState(request.state);
-        address.setZipCode(request.zipCode);
-        return homeAddressRepository.save(address);
+        HomeAddress homeAddress = homeAddressRepository.findById(customer.getHomeAddressId()).orElseThrow(() -> new RuntimeException("Address missing"));
+        homeAddress.setStreet(request.streetAddress);
+        homeAddress.setCity(request.city);
+        homeAddress.setState(request.state);
+        homeAddress.setZipCode(request.zipCode);
+        return homeAddressRepository.save(homeAddress);
+    }
+
+    @PostMapping("/{customerId}/payment-methods")
+    @Transactional
+    public PaymentMethod addPaymentMethod(@PathVariable Integer customerId, @RequestBody PaymentMethodRequest request) {
+        BillingAddress billingAddress = new BillingAddress();
+        billingAddress.setStreetAddress(request.billingAddressRequest.streetAddress);
+        billingAddress.setCity(request.billingAddressRequest.city);
+        billingAddress.setState(request.billingAddressRequest.state);
+        billingAddress.setZipCode(request.billingAddressRequest.zipCode);
+        billingAddress = billingAddressRepository.save(billingAddress);
+
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setCardNumber(Integer.parseInt(request.cardNumber)); // or String if your entity uses String
+        paymentMethod.setExpirationMonth(request.expirationMonth);
+        paymentMethod.setExpirationYear(request.expirationYear);
+        paymentMethod.setBillingAddressId(billingAddress.getId());
+        paymentMethod = paymentMethodRepository.save(paymentMethod);
+
+        CustomerPaymentMethod customerPaymentMethod = new CustomerPaymentMethod();
+        customerPaymentMethod.setCustomerId(customerId);
+        customerPaymentMethod.setPaymentMethodId(paymentMethod.getId());
+        customerPaymentMethodRepository.save(customerPaymentMethod);
+        
+        return paymentMethod;
+    }
+    
+    @GetMapping("/{customerId}/payment-methods")
+    public List<PaymentMethod> getPaymentMethods(@PathVariable Integer customerId) {
+        List<CustomerPaymentMethod> customerPaymentMethods = customerPaymentMethodRepository.findByCustomerId(customerId);
+        return customerPaymentMethods.stream()
+        .map(l -> paymentMethodRepository.findById(l.getPaymentMethodId()).orElseThrow(() -> new RuntimeException("Customer not found"))).toList();
+    }
+        
+    @DeleteMapping("/{customerId}/payment-methods/{paymentMethodId}")
+    @Transactional
+    public void deletePaymentMethod(@PathVariable Integer customerId, @PathVariable Integer paymentMethodId) {
+        customerPaymentMethodRepository.deleteByCustomerIdAndPaymentMethodId(customerId, paymentMethodId);
+        PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId).orElseThrow(() -> new RuntimeException("Payment method not found"));
+        Integer billingAddressId = paymentMethod.getBillingAddressId();
+        paymentMethodRepository.deleteById(paymentMethodId);
+        if(billingAddressId != null){
+            if(!paymentMethodRepository.existsByBillingAddressId(billingAddressId)){
+                billingAddressRepository.deleteById(billingAddressId);
+            }
+        }
     }
 
 }

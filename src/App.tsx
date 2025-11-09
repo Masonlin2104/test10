@@ -14,14 +14,15 @@ import TicketSelection from "./components/TicketSelection";
 import AdminManageMovies from "./components/AdminManageMovies";
 import AdminHomePage from './components/AdminHomePage';
 import CreateAccount from './components/CreateAccount';
+import PaymentMethodsPage from './components/PaymentMethodsPage';
 import User from './components/User';
 import AdminPromotion from './components/AdminPromotions';
-import PaymentsMethodPage from './components/PaymentMethodsPage';
+import ForgotPassword from './components/ForgotPassword';
+import LogoutPage from './components/LogoutPage'; 
 import './App.css';
 
 // Import the new EmailVerification component
 import EmailVerification from './components/EmailVerification';
-import PaymentMethodsPage from './components/PaymentMethodsPage';
 
 function App() {
   const handleConfirm = (tickets: number) => {
@@ -33,13 +34,16 @@ function App() {
       {/* Main pages */}
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/home" element={<HomePage />} />
+      <Route path="/EmailVerification" element={<EmailVerification />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/EditProfile" element={<EditProfile />} />
       <Route path="/CreateAccount" element={<CreateAccount />} />
       <Route path="/Checkout" element={<CheckoutForm />} /> 
       <Route path="/User" element={<User />} />
+      <Route path="/ForgotPassword" element={<ForgotPassword />} />
       <Route path="/RegistrationForm" element={<RegistrationForm />} />
       <Route path="/PaymentMethodsPage" element={<PaymentMethodsPage />} />
+      <Route path="/logout" element={<LogoutPage />} />
       <Route path="/verify" element={<EmailVerification />} />
       <Route 
             path="/RegistrationConfirmation" 

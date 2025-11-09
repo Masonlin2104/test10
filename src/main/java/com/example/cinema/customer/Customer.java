@@ -3,7 +3,7 @@ package com.example.cinema.customer;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Customer")
+@Table(name = "`Customer`")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Customer {
     private String email;
 
     @Column(name = "PhoneNumber")
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "Password", nullable = false, length = 255)
     private String password;
@@ -30,8 +30,8 @@ public class Customer {
     @Column(name = "CustomerStatusId", nullable = false)
     private Integer customerStatusId;
 
-    @Column(name = "VerficationCode")
-    private String verficationCode;
+    @Column(name = "VerificationCode")
+    private String verificationCode;
 
 
     public Integer getId() {
@@ -55,10 +55,10 @@ public class Customer {
     public void setEmail(String email) {
         this.email = email;
     }
-    public Integer getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
-    public void setPhoneNumber(Integer phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
     public String getPassword() {
@@ -80,11 +80,11 @@ public class Customer {
     public void setCustomerStatusId(Integer customerStatusId) {
         this.customerStatusId = customerStatusId;   
     }
-    public String getVerficationCode() {
-        return verficationCode;
+    public String getVerificationCode() {
+        return verificationCode;
     }
     public void setVerificationCode(String verificationCode){
-        this.verficationCode = verificationCode;
+        this.verificationCode = verificationCode;
     }
 
 }

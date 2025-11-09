@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
           <Link to="/login">
             <button className={styles.loginButton}>Login</button>
           </Link>
-          <Link to="/registrationform">
+          <Link to="/RegistrationForm">
             <button className={styles.createButton}>Create Account</button>
           </Link>
         </div>

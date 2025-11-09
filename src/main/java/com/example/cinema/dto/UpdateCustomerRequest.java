@@ -3,5 +3,5 @@ package com.example.cinema.dto;
 public class UpdateCustomerRequest {
     public String firstName;
     public String lastName;
-    public Integer phoneNumber;
+    public String phoneNumber;
 }

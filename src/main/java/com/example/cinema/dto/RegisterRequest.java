@@ -4,7 +4,7 @@ public class RegisterRequest {
     private String firstName;
     private String lastName;
     private String email;
-    private Integer phoneNumber;
+    private String phoneNumber;
     private String password;
     private Boolean registerForPromo;
 
@@ -27,10 +27,10 @@ public class RegisterRequest {
     public void setEmail(String email) {
         this.email = email;
     }
-    public Integer getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
-    public void setPhoneNumber(Integer phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
     public String getPassword() {

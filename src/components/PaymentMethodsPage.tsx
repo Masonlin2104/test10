@@ -36,11 +36,7 @@ const PaymentMethodsPage: React.FC = () => {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([emptyMethod()]);
   const [error, setError] = useState("");
 
-  const handleChange = (
-    index: number,
-    field: string,
-    value: string
-  ) => {
+  const handleChange = (index: number, field: string, value: string) => {
     const updatedMethods = [...paymentMethods];
 
     switch (field) {
@@ -90,9 +86,7 @@ const PaymentMethodsPage: React.FC = () => {
     setPaymentMethods(updatedMethods);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     for (const method of paymentMethods) {
       if (
         !method.nameOnCard ||
@@ -115,167 +109,169 @@ const PaymentMethodsPage: React.FC = () => {
 
     setError("");
     console.log("Payment methods submitted:", paymentMethods);
+    // Backend team can hook into this console log:
+    // e.g., send to API: fetch("/api/payment", { method: "POST", body: JSON.stringify(paymentMethods) })
   };
 
   return (
     <div className={styles.container}>
       <h2 className={styles.heading}>Payment Methods</h2>
-      <form onSubmit={handleSubmit}>
-        {paymentMethods.map((method, idx) => (
-          <div key={idx} className={styles.methodCard}>
-            <div className={styles.methodHeader}>
-              <h3>Payment Method {idx + 1}</h3>
-              {paymentMethods.length > 1 && (
-                <button
-                  type="button"
-                  className={styles.deleteButton}
-                  onClick={() => deletePaymentMethod(idx)}
-                >
-                  🗑
-                </button>
-              )}
-            </div>
 
-            {/* Card Info */}
+      {paymentMethods.map((method, idx) => (
+        <div key={idx} className={styles.methodCard}>
+          <div className={styles.methodHeader}>
+            <h3>Payment Method {idx + 1}</h3>
+            {paymentMethods.length > 1 && (
+              <button
+                type="button"
+                className={styles.deleteButton}
+                onClick={() => deletePaymentMethod(idx)}
+              >
+                🗑
+              </button>
+            )}
+          </div>
+
+          {/* Card Info */}
+          <div className={styles.inputGroup}>
+            <label>Name on Card</label>
+            <input
+              type="text"
+              value={method.nameOnCard}
+              onChange={(e) => handleChange(idx, "nameOnCard", e.target.value)}
+              placeholder="Name on Card"
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>Card Number</label>
+            <input
+              type="text"
+              value={method.cardNumber}
+              onChange={(e) => handleChange(idx, "cardNumber", e.target.value)}
+              placeholder="Card Number"
+            />
+          </div>
+
+          <div className={styles.row}>
             <div className={styles.inputGroup}>
-              <label>Name on Card</label>
+              <label>Expiration Month</label>
               <input
                 type="text"
-                value={method.nameOnCard}
-                onChange={(e) => handleChange(idx, "nameOnCard", e.target.value)}
-                placeholder="Name on Card"
+                value={method.expirationMonth}
+                onChange={(e) => handleChange(idx, "expirationMonth", e.target.value)}
+                placeholder="MM"
               />
             </div>
-
             <div className={styles.inputGroup}>
-              <label>Card Number</label>
+              <label>Expiration Year</label>
               <input
                 type="text"
-                value={method.cardNumber}
-                onChange={(e) => handleChange(idx, "cardNumber", e.target.value)}
-                placeholder="Card Number"
+                value={method.expirationYear}
+                onChange={(e) => handleChange(idx, "expirationYear", e.target.value)}
+                placeholder="YYYY"
               />
-            </div>
-
-            <div className={styles.row}>
-              <div className={styles.inputGroup}>
-                <label>Expiration Month</label>
-                <input
-                  type="text"
-                  value={method.expirationMonth}
-                  onChange={(e) => handleChange(idx, "expirationMonth", e.target.value)}
-                  placeholder="MM"
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label>Expiration Year</label>
-                <input
-                  type="text"
-                  value={method.expirationYear}
-                  onChange={(e) => handleChange(idx, "expirationYear", e.target.value)}
-                  placeholder="YYYY"
-                />
-              </div>
-            </div>
-
-            {/* Billing Address */}
-            <h3>Billing Address</h3>
-            <div className={styles.inputGroup}>
-              <label>Street Address</label>
-              <input
-                type="text"
-                value={method.billingAddress.streetAddress}
-                onChange={(e) => handleChange(idx, "billingStreet", e.target.value)}
-                placeholder="Street Address"
-              />
-            </div>
-
-            <div className={styles.row}>
-              <div className={styles.inputGroup}>
-                <label>City</label>
-                <input
-                  type="text"
-                  value={method.billingAddress.city}
-                  onChange={(e) => handleChange(idx, "billingCity", e.target.value)}
-                  placeholder="City"
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label>State</label>
-                <input
-                  type="text"
-                  value={method.billingAddress.state}
-                  onChange={(e) => handleChange(idx, "billingState", e.target.value)}
-                  placeholder="State"
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label>ZIP</label>
-                <input
-                  type="text"
-                  value={method.billingAddress.zip}
-                  onChange={(e) => handleChange(idx, "billingZip", e.target.value)}
-                  placeholder="ZIP"
-                />
-              </div>
-            </div>
-
-            {/* Home Address */}
-            <h3>Home Address</h3>
-            <div className={styles.inputGroup}>
-              <label>Street Address</label>
-              <input
-                type="text"
-                value={method.homeAddress.streetAddress}
-                onChange={(e) => handleChange(idx, "homeStreet", e.target.value)}
-                placeholder="Street Address"
-              />
-            </div>
-
-            <div className={styles.row}>
-              <div className={styles.inputGroup}>
-                <label>City</label>
-                <input
-                  type="text"
-                  value={method.homeAddress.city}
-                  onChange={(e) => handleChange(idx, "homeCity", e.target.value)}
-                  placeholder="City"
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label>State</label>
-                <input
-                  type="text"
-                  value={method.homeAddress.state}
-                  onChange={(e) => handleChange(idx, "homeState", e.target.value)}
-                  placeholder="State"
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label>ZIP</label>
-                <input
-                  type="text"
-                  value={method.homeAddress.zip}
-                  onChange={(e) => handleChange(idx, "homeZip", e.target.value)}
-                  placeholder="ZIP"
-                />
-              </div>
             </div>
           </div>
-        ))}
 
-        {paymentMethods.length < 3 && (
-          <button type="button" className={styles.addButton} onClick={addPaymentMethod}>
-            Add Another Payment Method
-          </button>
-        )}
+          {/* Billing Address */}
+          <h3>Billing Address</h3>
+          <div className={styles.inputGroup}>
+            <label>Street Address</label>
+            <input
+              type="text"
+              value={method.billingAddress.streetAddress}
+              onChange={(e) => handleChange(idx, "billingStreet", e.target.value)}
+              placeholder="Street Address"
+            />
+          </div>
 
-        {error && <p className={styles.error}>{error}</p>}
+          <div className={styles.row}>
+            <div className={styles.inputGroupSmall}>
+              <label>City</label>
+              <input
+                type="text"
+                value={method.billingAddress.city}
+                onChange={(e) => handleChange(idx, "billingCity", e.target.value)}
+                placeholder="City"
+              />
+            </div>
+            <div className={styles.inputGroupSmall}>
+              <label>State</label>
+              <input
+                type="text"
+                value={method.billingAddress.state}
+                onChange={(e) => handleChange(idx, "billingState", e.target.value)}
+                placeholder="State"
+              />
+            </div>
+            <div className={styles.inputGroupSmall}>
+              <label>ZIP</label>
+              <input
+                type="text"
+                value={method.billingAddress.zip}
+                onChange={(e) => handleChange(idx, "billingZip", e.target.value)}
+                placeholder="ZIP"
+              />
+            </div>
+          </div>
 
-        <button type="submit" className={styles.submitButton}>
-          Save Payment Methods
+          {/* Home Address */}
+          <h3>Home Address</h3>
+          <div className={styles.inputGroup}>
+            <label>Street Address</label>
+            <input
+              type="text"
+              value={method.homeAddress.streetAddress}
+              onChange={(e) => handleChange(idx, "homeStreet", e.target.value)}
+              placeholder="Street Address"
+            />
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.inputGroupSmall}>
+              <label>City</label>
+              <input
+                type="text"
+                value={method.homeAddress.city}
+                onChange={(e) => handleChange(idx, "homeCity", e.target.value)}
+                placeholder="City"
+              />
+            </div>
+            <div className={styles.inputGroupSmall}>
+              <label>State</label>
+              <input
+                type="text"
+                value={method.homeAddress.state}
+                onChange={(e) => handleChange(idx, "homeState", e.target.value)}
+                placeholder="State"
+              />
+            </div>
+            <div className={styles.inputGroupSmall}>
+              <label>ZIP</label>
+              <input
+                type="text"
+                value={method.homeAddress.zip}
+                onChange={(e) => handleChange(idx, "homeZip", e.target.value)}
+                placeholder="ZIP"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {paymentMethods.length < 3 && (
+        <button type="button" className={styles.addButton} onClick={addPaymentMethod}>
+          Add Another Payment Method
         </button>
-      </form>
+      )}
+
+      {error && <p className={styles.error}>{error}</p>}
+
+      {/* Button explicitly calls handleSubmit, not a <form> submit */}
+      <button type="button" className={styles.submitButton} onClick={handleSubmit}>
+        Save Payment Methods
+      </button>
     </div>
   );
 };

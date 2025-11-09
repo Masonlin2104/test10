@@ -56,6 +56,33 @@
   flex: 1;
 }
 
+.inputGroupSmall {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  width: 100px;
+  flex: 1;
+}
+
+.inputGroupSmall label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #1e1e2f;
+}
+
+.inputGroupSmall input {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.inputGroupSmall input:focus {
+  border-color: #f5c518;
+  box-shadow: 0 0 5px #f5c518;
+}
+
 .inputGroup label {
   margin-bottom: 5px;
   font-weight: bold;

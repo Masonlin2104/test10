@@ -80,7 +80,7 @@ public class CustomerController {
         customer.setVerificationCode(verificationCode);
         
         // Set status: 1 = Inactive (pending verification), 2 = Active
-        customer.setCustomerStatusId(1);
+        customer.setCustomerStatusId(2);
 
         customerRepository.save(customer);
 
@@ -131,7 +131,7 @@ public class CustomerController {
     }
 
     // ========== GET CUSTOMER INFO ==========
-    @GetMapping("/{customerId}")
+    @GetMapping("/id/{customerId}")
     public Customer getCustomer(@PathVariable Integer customerId) {
         Customer customer = customerRepository.findById(customerId)
             .orElseThrow(() -> new RuntimeException("Customer not found"));

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./RegistrationForm.module.css";
+import PaymentMethodsPage from "./PaymentMethodsPage"; // ✅ import this
 
 const RegistrationForm: React.FC = () => {
   const navigate = useNavigate();
-  
+
   // Form fields
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -13,17 +14,17 @@ const RegistrationForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [registerForPromo, setRegisterForPromo] = useState(false);
-  const [promoRegisterOptIn, setPromoRegisterOptIn] = useState(false); // new checkbox
-  const [promoCode, setPromoCode] = useState(""); // input for new checkbox
+  const [promoRegisterOptIn, setPromoRegisterOptIn] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
   const [promoOptIn, setPromoOptIn] = useState(false);
-  
+
   // UI state
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPaymentMethods, setShowPaymentMethods] = useState(false); // ✅ added
 
   const validateForm = (): boolean => {
-    // Required fields validation
     if (!firstName.trim()) {
       setError("First name is required");
       return false;
@@ -49,27 +50,23 @@ const RegistrationForm: React.FC = () => {
       return false;
     }
 
-    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address");
       return false;
     }
 
-    // Phone number validation (10 digits)
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       setError("Phone number must be 10 digits");
       return false;
     }
 
-    // Password validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
       return false;
     }
 
-    // Password match validation
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return false;
@@ -83,7 +80,6 @@ const RegistrationForm: React.FC = () => {
     setError("");
     setSuccess(false);
 
-    // Validate form
     if (!validateForm()) {
       return;
     }
@@ -102,8 +98,6 @@ const RegistrationForm: React.FC = () => {
           email: email.trim().toLowerCase(),
           phoneNumber: parseInt(phoneNumber),
           password: password,
-          // Note: Promotion preference is handled by customerStatusId on backend
-          // You could add a field to RegisterRequest.java if you want to handle it differently
         }),
       });
 
@@ -113,14 +107,10 @@ const RegistrationForm: React.FC = () => {
         throw new Error(data || "Registration failed");
       }
 
-      // Success!
       setSuccess(true);
-      
-      // Show success message for 3 seconds then redirect to login
       setTimeout(() => {
         navigate("/login");
       }, 3000);
-
     } catch (err: any) {
       setError(err.message || "Registration failed. Please try again.");
     } finally {
@@ -139,9 +129,7 @@ const RegistrationForm: React.FC = () => {
           <p style={{ marginBottom: "10px" }}>
             A verification email has been sent to:
           </p>
-          <p style={{ fontWeight: "bold", marginBottom: "20px" }}>
-            {email}
-          </p>
+          <p style={{ fontWeight: "bold", marginBottom: "20px" }}>{email}</p>
           <p style={{ fontSize: "0.9rem", color: "#666" }}>
             Please check your email and click the verification link to activate your account.
           </p>
@@ -255,61 +243,66 @@ const RegistrationForm: React.FC = () => {
           />
         </div>
 
-        {/* Manage Promotions & Dropdown */}
+        {/* Manage Promotions */}
         <div className={styles.checkboxRow}>
           <div className={styles.checkboxGroup}>
-          <input
-            id="promoOptIn"
-            type="checkbox"
-            checked={promoOptIn}
-            onChange={(e) => setPromoOptIn(e.target.checked)}
-          />
-          <label htmlFor="promoOptIn" className={styles.checkboxLabel}>
-            Register for Promotions
-          </label>
-        </div>
-
-        {promoOptIn && (
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Promo Code</label>
             <input
-              type="text"
-              className={styles.input}
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
-              placeholder="Enter promo code"
+              id="promoOptIn"
+              type="checkbox"
+              checked={promoOptIn}
+              onChange={(e) => setPromoOptIn(e.target.checked)}
             />
+            <label htmlFor="promoOptIn" className={styles.checkboxLabel}>
+              Register for Promotions
+            </label>
           </div>
-        )}
 
+          {promoOptIn && (
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Promo Code</label>
+              <input
+                type="text"
+                className={styles.input}
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+                placeholder="Enter promo code"
+              />
+            </div>
+          )}
 
-          {/* Edit Payment Methods button */}
+          {/* ✅ Inline Edit Payment Methods toggle */}
           <button
             type="button"
-            
             className={styles.paymentButton}
-            onClick={() => navigate("/PaymentMethodsPage")}
+            onClick={() => setShowPaymentMethods(!showPaymentMethods)}
           >
-            Edit Payment Methods
+            {showPaymentMethods ? "Hide Payment Methods" : "Edit Payment Methods"}
           </button>
         </div>
+
+        {/* ✅ Conditionally show PaymentMethodsPage */}
+        {showPaymentMethods && (
+          <div className={styles.paymentSection}>
+            <PaymentMethodsPage />
+          </div>
+        )}
 
         {/* Error Message */}
         {error && <p className={styles.errorMessage}>{error}</p>}
 
         {/* Submit Button */}
-        <button 
-          type="submit" 
-          className={styles.submitButton}
-          disabled={loading}
-        >
+        <button type="submit" className={styles.submitButton} disabled={loading}>
           {loading ? "Creating Account..." : "Register"}
         </button>
 
         <p className={styles.smallText}>
           Already have an account?{" "}
           <span
-            style={{ color: "#f5c518", cursor: "pointer", textDecoration: "underline" }}
+            style={{
+              color: "#f5c518",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
             onClick={() => !loading && navigate("/login")}
           >
             Login here
